@@ -231,4 +231,51 @@ final class StockNoteUITests: XCTestCase {
         print("PENDING-DUMP: \(text)")
         XCTAssertTrue(text.contains("牛乳"), "許可した直後に、期限の通知が予約される")
     }
+
+    /// 通知を「許可しない」にしても、品目は普通に保存・表示でき、通知は予約されない。
+    func testDenyingNotificationPermissionKeepsAppWorking() throws {
+        let env = ProcessInfo.processInfo.environment["PENDING_DUMP"]
+        try XCTSkipUnless(env != nil, "PENDING_DUMP がないのでスキップ")
+        let dump = env!
+        try? FileManager.default.removeItem(atPath: dump)
+
+        let app = XCUIApplication()
+        app.launchArguments = ["-resetData", "-hideAds"]
+        app.launchEnvironment["PENDING_DUMP"] = dump
+        app.launch()
+
+        app.buttons["品目を追加"].firstMatch.tap()
+        let field = app.textFields["品名"]
+        XCTAssertTrue(field.waitForExistence(timeout: 10))
+        field.tap()
+        field.typeText("牛乳\n")
+        app.swipeUp()
+        let toggle = app.switches["期限がある"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 3))
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.5)).tap()
+        app.buttons["保存"].tap()
+
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let deny = springboard.alerts.buttons["許可しない"]
+        XCTAssertTrue(deny.waitForExistence(timeout: 10), "通知の許可ダイアログが出る")
+        deny.tap()
+
+        // 品目は保存されて一覧に出る。アプリは落ちていない
+        XCTAssertTrue(app.buttons["牛乳"].waitForExistence(timeout: 10))
+        XCTAssertEqual(app.state, .runningForeground)
+
+        // 続けて品目を編集しても問題なく保存でき、聞き直しのダイアログは出ない
+        app.buttons["牛乳"].tap()
+        let name = app.textFields["品名"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.tap()
+        name.typeText("パック\n")
+        app.buttons["保存"].tap()
+        XCTAssertTrue(app.buttons["牛乳パック"].waitForExistence(timeout: 10))
+        XCTAssertFalse(springboard.alerts.firstMatch.waitForExistence(timeout: 2), "拒否したあとは、許可を聞き直さない")
+
+        // 通知は予約されていない(予約すれば書き出しファイルに現れる)
+        let text = (try? String(contentsOfFile: dump, encoding: .utf8)) ?? ""
+        XCTAssertFalse(text.contains("牛乳"), "許可がないので、通知は予約されない")
+    }
 }
