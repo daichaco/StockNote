@@ -1,0 +1,31 @@
+{
+  "identifier" : "A1B2C3D4",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "160",
+      "familyShareable" : false,
+      "internalID" : "6F1A0C3E",
+      "localizations" : [
+        {
+          "description" : "広告を表示しなくなります。",
+          "displayName" : "広告を消す",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "com.taiki.StockNote.removeads",
+      "referenceName" : "広告を消す",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "ja_JP",
+    "_storefront" : "JPN"
+  },
+  "subscriptionGroups" : [],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
