@@ -2,6 +2,10 @@ import Foundation
 import StockCore
 import UserNotifications
 
+extension Notification.Name {
+    static let expiryAuthorizationGranted = Notification.Name("expiryAuthorizationGranted")
+}
+
 /// 期限の警告日の朝9時に、品目ごとに1回だけ通知する。すべてローカル通知で、通信はしない。
 enum ExpiryNotifier {
     private static let prefix = "expiry-"
@@ -20,7 +24,9 @@ enum ExpiryNotifier {
         let center = UNUserNotificationCenter.current()
         let settings = await center.notificationSettings()
         guard settings.authorizationStatus == .notDetermined else { return }
-        _ = try? await center.requestAuthorization(options: [.alert, .sound])
+        let granted = (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
+        // 保存のときの予約は、許可の結果が出る前に走ってしまうので、許可されたら予約し直してもらう
+        if granted { await MainActor.run { NotificationCenter.default.post(name: .expiryAuthorizationGranted, object: nil) } }
     }
 
     /// 許可がなければ何もしない(ここでは許可を求めない)。
@@ -51,5 +57,21 @@ enum ExpiryNotifier {
             let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
             try? await center.add(UNNotificationRequest(identifier: prefix + t.id.uuidString, content: content, trigger: trigger))
         }
+        #if DEBUG
+        await dumpPending()
+        #endif
     }
+
+    #if DEBUG
+    /// UI テスト用: 環境変数 PENDING_DUMP のパスに、予約済みの通知(識別子|本文|日時)を書き出す(Release には入らない)
+    static func dumpPending() async {
+        guard let path = ProcessInfo.processInfo.environment["PENDING_DUMP"] else { return }
+        let pending = await UNUserNotificationCenter.current().pendingNotificationRequests()
+        let lines = pending.filter { $0.identifier.hasPrefix(prefix) }.map { r -> String in
+            let next = (r.trigger as? UNCalendarNotificationTrigger)?.nextTriggerDate().map { "\($0)" } ?? "-"
+            return "\(r.identifier)|\(r.content.body)|\(next)"
+        }
+        try? lines.joined(separator: "\n").write(toFile: path, atomically: true, encoding: .utf8)
+    }
+    #endif
 }

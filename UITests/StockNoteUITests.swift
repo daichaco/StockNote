@@ -188,4 +188,47 @@ final class StockNoteUITests: XCTestCase {
         wait(for: [priced], timeout: 20)
         try shot(app, "05-settings")
     }
+
+    /// 初めて期限を入れたときに通知の許可を聞き、許可すると予約されること。
+    /// `TEST_RUNNER_PENDING_DUMP=書き出し先` を付けたときだけ動く。
+    func testExpiryNotificationIsScheduledAfterPermission() throws {
+        let env = ProcessInfo.processInfo.environment["PENDING_DUMP"]
+        try XCTSkipUnless(env != nil, "PENDING_DUMP がないのでスキップ")
+        let dump = env!
+        try? FileManager.default.removeItem(atPath: dump)
+
+        let app = XCUIApplication()
+        app.launchArguments = ["-resetData", "-hideAds"]
+        app.launchEnvironment["PENDING_DUMP"] = dump
+        app.launch()
+
+        app.buttons["品目を追加"].firstMatch.tap()   // 空の画面の「品目を追加」
+        let field = app.textFields["品名"]
+        XCTAssertTrue(field.waitForExistence(timeout: 10))
+        field.tap()
+        field.typeText("牛乳\n")
+        app.swipeUp()
+        let toggle = app.switches["期限がある"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 3))
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.5)).tap()
+        XCTAssertEqual(toggle.value as? String, "1")
+        app.buttons["保存"].tap()
+
+        // 初めて期限を入れたので、通知の許可を聞かれる
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let allow = springboard.alerts.buttons.matching(NSPredicate(format: "label IN {'許可', 'Allow'}")).firstMatch
+        XCTAssertTrue(allow.waitForExistence(timeout: 10), "通知の許可ダイアログが出る")
+        allow.tap()
+
+        // 許可のあと、予約される(書き出しファイルに牛乳が現れる)
+        let deadline = Date().addingTimeInterval(15)
+        var text = ""
+        while Date() < deadline {
+            text = (try? String(contentsOfFile: dump, encoding: .utf8)) ?? ""
+            if text.contains("牛乳") { break }
+            Thread.sleep(forTimeInterval: 0.5)
+        }
+        print("PENDING-DUMP: \(text)")
+        XCTAssertTrue(text.contains("牛乳"), "許可した直後に、期限の通知が予約される")
+    }
 }

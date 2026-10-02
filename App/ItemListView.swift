@@ -31,6 +31,7 @@ struct ItemListView: View {
     @State private var filter: KindFilter = .all
     @State private var search = ""
     @State private var now = Date()
+    @State private var authorizationEpoch = 0
     @State private var editing: Item?
     @State private var adding = false
     @State private var showingKit = false
@@ -85,7 +86,8 @@ struct ItemListView: View {
             .sheet(isPresented: $showingSettings) { SettingsView() }
         }
         .onChange(of: scenePhase) { _, phase in if phase == .active { now = Date() } }
-        .task(id: scheduleKey + [String(notifyExpiry)]) {
+        .onReceive(NotificationCenter.default.publisher(for: .expiryAuthorizationGranted)) { _ in authorizationEpoch += 1 }
+        .task(id: scheduleKey + [String(notifyExpiry), String(authorizationEpoch)]) {
             let targets = items.map { ExpiryNotifier.Target(id: $0.id, name: $0.name, expiry: $0.expiry, warnDays: $0.warnDays) }
             await ExpiryNotifier.reschedule(targets, enabled: notifyExpiry)
         }
