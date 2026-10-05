@@ -3,8 +3,8 @@ import SwiftData
 import SwiftUI
 
 enum AppLinks {
-    /// プライバシーポリシーを公開したら URL を入れる(nil の間は行を出さない)
-    static let privacyPolicy: URL? = nil
+    /// GitHub Pages(リポジトリの docs/privacy-policy.md)
+    static let privacyPolicy: URL? = URL(string: "https://daichaco.github.io/StockNote/privacy-policy")
 }
 
 struct SettingsView: View {

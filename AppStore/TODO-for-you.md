@@ -17,9 +17,9 @@ Claude が用意したもの: アプリ本体、アプリ内課金(広告を消�
 - 差し替えるまで、Release ビルド(App Store 用)は**広告が出ない**。テスト広告のまま公開されることはない。
 
 ## 2. プライバシーポリシーを公開する(URL が必須)
-- ☐ `docs/privacy-policy.md` の `〔 〕` を埋める(提供者名、問い合わせ先、日付)。日本語・英語の両方。
-- ☐ 公開する場所を決める(数独ヘルパーと同じ GitHub Pages なら、このアプリ用のリポジトリを作る)。公開後、URL が開けることを確認する。
-- ☐ 公開した URL を、`App/SettingsView.swift` の `AppLinks.privacyPolicy` に入れる(Claude に伝えれば入れる)。
+- ✅ `docs/privacy-policy.md` を埋めた(提供者名 taiki、問い合わせ先 GitHub の Issues)。アプリの設定画面と掲載文にも URL を入れた。
+- ☐ GitHub の `daichaco/StockNote` → Settings → Pages → Source を「Deploy from a branch」、Branch を `main`、フォルダを `/docs` にして保存する。
+- ☐ 数分後に https://daichaco.github.io/StockNote/privacy-policy が開けることを確認する(Claude に頼めば確認する)。
 
 ## 3. Xcode の署名
 - ☐ Signing & Capabilities で、Team に有料の開発者チームを選ぶ(Team ID は数独ヘルパーと同じ)。

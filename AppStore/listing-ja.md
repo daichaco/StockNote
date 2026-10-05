@@ -56,12 +56,12 @@ App Store Connect の各欄に貼り付けられます。`〔 〕` は、あな�
 - セカンダリ: `ライフスタイル`
 
 ## URL
-- サポートURL: `〔問い合わせ先の URL〕`
-- プライバシーポリシーURL: `〔公開したポリシーの URL〕`(`docs/privacy-policy.md` を公開する)
+- サポートURL: `https://github.com/daichaco/StockNote/issues`
+- プライバシーポリシーURL: `https://daichaco.github.io/StockNote/privacy-policy`(GitHub Pages を有効にしてから、開けることを確認する)
 - マーケティングURL: 空欄でよい
 
 ## 著作権
-`© 2026 〔提供者名〕`
+`© 2026 taiki`
 
 ## 年齢制限(質問票の答え)
 すべて「なし」/「いいえ」を選びます。→ 結果は 4+ になります。

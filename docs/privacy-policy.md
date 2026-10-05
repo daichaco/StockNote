@@ -1,13 +1,10 @@
-<!-- 下書き: 広告(Google AdMob)を組み込んだあと、Google の最新の案内と照らして最終確認する。
-     〔 〕はあなたが決めて差し替える部分(提供者名・問い合わせ先・最終更新日)。氏名・住所・電話・メールは書かない。 -->
-
 # プライバシーポリシー / Privacy Policy
 
-最終更新日: 〔日付〕 / Last updated: 〔date〕
+最終更新日: 2026年10月5日 / Last updated: October 5, 2026
 
 ## 日本語
 
-「のこりメモ」(以下「本アプリ」)は、〔提供者名〕(以下「開発者」)が提供する、日用品・食品・防災用品の残量と期限を記録するアプリです。本アプリにおけるお客様の情報の取り扱いは、次のとおりです。
+「のこりメモ」(以下「本アプリ」)は、taiki(以下「開発者」)が提供する、日用品・食品・防災用品の残量と期限を記録するアプリです。本アプリにおけるお客様の情報の取り扱いは、次のとおりです。
 
 ### 開発者が収集する情報
 開発者は、本アプリを通じて、お客様の個人情報を収集しません。アカウント登録はなく、品目のデータを開発者のサーバーに送信することもありません。
@@ -37,13 +34,13 @@
 本ポリシーを変更する場合は、このページで公開します。
 
 ### お問い合わせ
-〔問い合わせ先(GitHub の Issues など)〕
+GitHub の Issues: https://github.com/daichaco/StockNote/issues
 
 ---
 
 ## English
 
-"のこりメモ" (the "App") is provided by 〔provider name〕 (the "Developer"). It helps you keep track of the remaining amount and expiry dates of groceries, household goods, and emergency supplies.
+"のこりメモ" (the "App") is provided by taiki (the "Developer"). It helps you keep track of the remaining amount and expiry dates of groceries, household goods, and emergency supplies.
 
 ### Information the Developer collects
 The Developer does not collect any personal information through the App. There is no account registration, and your item data is never sent to the Developer's servers.
@@ -72,4 +69,4 @@ The App does not collect personal information.
 If this policy changes, the updated version will be published on this page.
 
 ### Contact
-〔contact, e.g. GitHub Issues〕
+GitHub Issues: https://github.com/daichaco/StockNote/issues
